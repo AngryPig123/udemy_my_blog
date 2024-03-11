@@ -57,6 +57,14 @@ public class CommentServiceImpl implements CommentService {
         return result;
     }
 
+    @Override
+    public CommentDto deleteComment(Long postId, Long commentId) {
+        Comment comment = resutnComment(postId, commentId);
+        CommentDto result = comment.toDto();
+        commentRepository.delete(comment);
+        log.info("result = {}", result);
+        return result;
+    }
 
     private Comment resutnComment(Long postId, Long commentId) {
 

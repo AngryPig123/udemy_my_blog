@@ -123,6 +123,33 @@ class CommentControllerTest {
 
     }
 
+    @Test
+    void deleteComment() throws Exception {
+
+        PostDto postDto = new PostDto(0L, "title", "description", "content");
+        CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
+        KeyMap keyMap = commentCreateHelper(commentDto, postDto);
+
+        mockMvc.perform(
+                        delete("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), keyMap.getCommentId())
+                )
+                .andExpect(jsonPath("$.name").value(commentDto.getName()))
+                .andExpect(jsonPath("$.email").value(commentDto.getEmail()))
+                .andExpect(jsonPath("$.body").value(commentDto.getBody()))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(
+                        delete("/api/v1/posts/{postId}/comments/{commentId}", Long.MAX_VALUE - 2, keyMap.getCommentId())
+                )
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(
+                        delete("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), Long.MAX_VALUE - 2)
+                )
+                .andExpect(status().isNotFound());
+
+    }
+
     private PostDto postInsertHelper(PostDto postDto) {
         PostDto post = postService.createPost(postDto);
         Assertions.assertNotNull(post);
