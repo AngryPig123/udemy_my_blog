@@ -15,5 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * 2024-03-10        AngryPig123       최초 생성
  */
 public interface PostRepository extends JpaRepository<Post, Long> {
-    
+
+    Post findPostByTitle(String title);
+
 }

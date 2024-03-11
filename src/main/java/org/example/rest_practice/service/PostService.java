@@ -1,11 +1,7 @@
 package org.example.rest_practice.service;
 
 import org.example.rest_practice.payload.PostDto;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
+import org.example.rest_practice.payload.PostResponse;
 
 /**
  * packageName    : org.example.rest_practice.service
@@ -21,5 +17,12 @@ import java.util.List;
 public interface PostService {
     PostDto createPost(PostDto postDto);
 
-    List<PostDto> getAllPosts();
+    PostResponse getAllPosts(int pageNo, int pageSize, String sort, String sortDir);
+
+    PostDto getPostById(Long id);
+
+    PostDto updatePost(PostDto postDto, Long id);
+
+    PostDto deletePost(Long id);
+
 }
