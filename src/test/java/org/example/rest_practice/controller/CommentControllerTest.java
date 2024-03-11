@@ -15,6 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,7 +27,7 @@ class CommentControllerTest extends CommentSetup {
 
     @Test
     void createComments() throws Exception {
-        PostDto postDto = new PostDto(0L, "title", "description", "content");
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
         commentCreateHelper(commentDto, postDto);
 
@@ -41,7 +43,7 @@ class CommentControllerTest extends CommentSetup {
     @Test
     void getCommentsById() throws Exception {
 
-        PostDto postDto = new PostDto(0L, "title", "description", "content");
+        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
         CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
         KeyMap keyMap = commentCreateHelper(commentDto, postDto);
 
@@ -71,7 +73,7 @@ class CommentControllerTest extends CommentSetup {
     @Test
     void updateComment() throws Exception {
 
-        PostDto postDto = new PostDto(0L, "title", "description", "content");
+        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
         CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
         KeyMap keyMap = commentCreateHelper(commentDto, postDto);
 
@@ -108,7 +110,7 @@ class CommentControllerTest extends CommentSetup {
     @Test
     void deleteComment() throws Exception {
 
-        PostDto postDto = new PostDto(0L, "title", "description", "content");
+        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
         CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
         KeyMap keyMap = commentCreateHelper(commentDto, postDto);
 

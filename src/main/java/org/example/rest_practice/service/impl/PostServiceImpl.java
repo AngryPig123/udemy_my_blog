@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
     public PostDto createPost(PostDto postDto) {
         Post post = new Post(postDto.getTitle(), postDto.getDescription(), postDto.getContent());
         Post save = postRepository.save(post);
-        PostDto postResponse = new PostDto(save.getPostId(), save.getTitle(), save.getDescription(), save.getContent());
+        PostDto postResponse = save.toDto();
         log.info("postResponse = {}", postResponse);
         return postResponse;
     }

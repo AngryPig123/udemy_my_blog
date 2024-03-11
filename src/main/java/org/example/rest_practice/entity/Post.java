@@ -2,10 +2,12 @@ package org.example.rest_practice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.rest_practice.payload.CommentDto;
 import org.example.rest_practice.payload.PostDto;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * packageName    : org.example.rest_practice.entity
@@ -49,7 +51,8 @@ public class Post {
     }
 
     public PostDto toDto() {
-        return new PostDto(this.postId, this.title, this.description, this.content);
+        Set<CommentDto> commentDtoSet = this.comments.stream().map(Comment::toDto).collect(Collectors.toSet());
+        return new PostDto(this.postId, this.title, this.description, this.content, commentDtoSet);
     }
 
 }

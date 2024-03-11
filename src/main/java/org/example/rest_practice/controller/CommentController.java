@@ -1,5 +1,6 @@
 package org.example.rest_practice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.rest_practice.payload.CommentDto;
@@ -17,23 +18,35 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping(path = "/{postId}/comments")
-    public ResponseEntity<CommentDto> createComment(@PathVariable("postId") Long postId, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> createComment(
+            @PathVariable("postId") Long postId,
+            @Valid @RequestBody CommentDto commentDto) {
         return new ResponseEntity<>(commentService.createComment(postId, commentDto), HttpStatus.OK);
     }
 
 
     @GetMapping(path = "/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> getCommentsById(@PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId) {
+    public ResponseEntity<CommentDto> getCommentsById(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId
+    ) {
         return new ResponseEntity<>(commentService.getCommentsById(postId, commentId), HttpStatus.OK);
     }
 
     @PutMapping(path = "/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> updateComment(@PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> updateComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId,
+            @Valid @RequestBody CommentDto commentDto
+    ) {
         return new ResponseEntity<>(commentService.updateComment(postId, commentId, commentDto), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> deleteComment(@PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId) {
+    public ResponseEntity<CommentDto> deleteComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId
+    ) {
         return new ResponseEntity<>(commentService.deleteComment(postId, commentId), HttpStatus.OK);
     }
 
