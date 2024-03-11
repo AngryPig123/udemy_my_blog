@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.rest_practice.payload.CommentDto;
 
 @Getter
@@ -18,12 +19,15 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
+    @Setter
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Setter
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Setter
     @Column(name = "body", nullable = false)
     private String body;
 
