@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
     public PostDto createPost(PostDto postDto) {
         Post post = new Post(postDto.getTitle(), postDto.getDescription(), postDto.getContent());
         Post save = postRepository.save(post);
-        PostDto postResponse = new PostDto(save.getId(), save.getTitle(), save.getDescription(), save.getContent());
+        PostDto postResponse = new PostDto(save.getPostId(), save.getTitle(), save.getDescription(), save.getContent());
         log.info("postResponse = {}", postResponse);
         return postResponse;
     }
@@ -104,7 +104,7 @@ public class PostServiceImpl implements PostService {
     public PostDto deletePost(Long id) {
 
         PostDto findPost = getPostById(id);
-        postRepository.deleteById(findPost.getId());
+        postRepository.deleteById(findPost.getPostId());
         return findPost;
     }
 

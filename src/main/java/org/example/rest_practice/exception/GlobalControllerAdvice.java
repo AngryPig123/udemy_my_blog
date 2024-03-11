@@ -22,4 +22,12 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(resourceNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BlogApiException.class)
+    public ResponseEntity<String> blogApiExceptionHandler(
+            BlogApiException blogApiException
+    ) {
+        return new ResponseEntity<>(blogApiException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

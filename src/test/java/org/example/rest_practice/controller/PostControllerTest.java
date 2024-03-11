@@ -36,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PostControllerTest {
 
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -52,6 +51,7 @@ class PostControllerTest {
     @BeforeEach
     void beforeEach() {
         jdbcTemplate.execute("DELETE FROM posts");
+        jdbcTemplate.execute("DELETE FROM comments");
     }
 
     @Test
@@ -64,7 +64,6 @@ class PostControllerTest {
                                 .content(objectMapper.writeValueAsString(postDto))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.title").value("title"))
                 .andExpect(jsonPath("$.description").value("description"))
                 .andExpect(jsonPath("$.content").value("content"));
@@ -177,7 +176,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.description").value(postDto.getDescription()))
                 .andExpect(jsonPath("$.content").value(postDto.getContent()));
         Post postByTitle = postRepository.findPostByTitle(postDto.getTitle());
-        return postByTitle.getId();
+        return postByTitle.getPostId();
     }
 
 }

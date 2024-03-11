@@ -26,7 +26,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
-    private Long id;
+    private Long postId;
     private String title;
     private String description;
     private String content;

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.rest_practice.payload.PostDto;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * packageName    : org.example.rest_practice.entity
  * fileName       : Post
@@ -23,8 +26,9 @@ import org.example.rest_practice.payload.PostDto;
 public class Post {
 
     @Id
+    @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long postId;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -35,6 +39,9 @@ public class Post {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)  //
+    private Set<Comment> comments = new HashSet<>();
+
     public Post(String title, String description, String content) {
         this.title = title;
         this.description = description;
@@ -42,7 +49,7 @@ public class Post {
     }
 
     public PostDto toDto() {
-        return new PostDto(this.id, this.title, this.description, this.content);
+        return new PostDto(this.postId, this.title, this.description, this.content);
     }
 
 }
