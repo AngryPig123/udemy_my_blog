@@ -1,18 +1,9 @@
 package org.example.rest_practice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.rest_practice.entity.Comment;
 import org.example.rest_practice.payload.CommentDto;
 import org.example.rest_practice.payload.PostDto;
-import org.example.rest_practice.repository.CommentRepository;
-import org.example.rest_practice.service.PostService;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;

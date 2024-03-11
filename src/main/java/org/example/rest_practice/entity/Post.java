@@ -1,7 +1,9 @@
 package org.example.rest_practice.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.example.rest_practice.payload.CommentDto;
 import org.example.rest_practice.payload.PostDto;
 
