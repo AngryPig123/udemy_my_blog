@@ -59,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     private Comment resutnComment(Long postId, Long commentId) {
+
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comments", "id", commentId));
 

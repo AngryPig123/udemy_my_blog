@@ -15,8 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,6 +82,42 @@ class CommentControllerTest {
 
         mockMvc.perform(
                         get("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), Long.MAX_VALUE - 2)
+                )
+                .andExpect(status().isNotFound());
+
+    }
+
+
+    @Test
+    void updateComment() throws Exception {
+
+        PostDto postDto = new PostDto(0L, "title", "description", "content");
+        CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
+        KeyMap keyMap = commentCreateHelper(commentDto, postDto);
+
+        CommentDto updateCommentDto = new CommentDto(0L, "updateName", "updateEmail", "updateBody");
+
+        mockMvc.perform(
+                        put("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), keyMap.getCommentId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateCommentDto))
+                )
+                .andExpect(jsonPath("$.name").value(updateCommentDto.getName()))
+                .andExpect(jsonPath("$.email").value(updateCommentDto.getEmail()))
+                .andExpect(jsonPath("$.body").value(updateCommentDto.getBody()))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(
+                        put("/api/v1/posts/{postId}/comments/{commentId}", Long.MAX_VALUE - 2, keyMap.getCommentId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateCommentDto))
+                )
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(
+                        put("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), Long.MAX_VALUE - 2)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateCommentDto))
                 )
                 .andExpect(status().isNotFound());
 
