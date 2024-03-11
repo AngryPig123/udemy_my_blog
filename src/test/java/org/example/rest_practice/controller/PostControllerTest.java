@@ -1,16 +1,9 @@
 package org.example.rest_practice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.rest_practice.entity.Post;
 import org.example.rest_practice.payload.PostDto;
-import org.example.rest_practice.repository.PostRepository;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,28 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PostControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @BeforeEach
-    void beforeEach() {
-        jdbcTemplate.execute("DELETE FROM posts");
-        jdbcTemplate.execute("DELETE FROM comments");
-    }
+class PostControllerTest extends PostSetup {
 
     @Test
     @Order(1)
@@ -113,8 +85,9 @@ class PostControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(
-                        get("/api/v1/posts/{id}", Long.MAX_VALUE - 2)
+                        get("/api/v1/posts/{id}", NOT_FOUND_ID)
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage(NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
     }
@@ -137,10 +110,11 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.content").value(updatePostDto.getContent()));
 
         mockMvc.perform(
-                        put("/api/v1/posts/{id}", Long.MAX_VALUE - 2)
+                        put("/api/v1/posts/{id}", NOT_FOUND_ID)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(updatePostDto))
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage(NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
     }
 
@@ -159,24 +133,11 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.content").value(postDto.getContent()));
 
         mockMvc.perform(
-                        delete("/api/v1/posts/{id}", Long.MAX_VALUE - 2)
+                        delete("/api/v1/posts/{id}", NOT_FOUND_ID)
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage(NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
-    }
-
-    private Long createHelper(PostDto postDto) throws Exception {
-        mockMvc.perform(
-                        post("/api/v1/posts")
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(postDto))
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(postDto.getTitle()))
-                .andExpect(jsonPath("$.description").value(postDto.getDescription()))
-                .andExpect(jsonPath("$.content").value(postDto.getContent()));
-        Post postByTitle = postRepository.findPostByTitle(postDto.getTitle());
-        return postByTitle.getPostId();
     }
 
 }

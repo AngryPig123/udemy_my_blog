@@ -20,31 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class CommentControllerTest {
+class CommentControllerTest extends CommentSetup {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private PostService postService;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @BeforeEach
-    void beforeEach() {
-        jdbcTemplate.execute("DELETE FROM posts");
-        jdbcTemplate.execute("DELETE FROM comments");
-    }
 
     @Test
     void createComments() throws Exception {
@@ -53,10 +30,11 @@ class CommentControllerTest {
         commentCreateHelper(commentDto, postDto);
 
         mockMvc.perform(
-                        post("/api/v1/posts/{id}/comments", Long.MAX_VALUE - 2)
+                        post("/api/v1/posts/{id}/comments", NOT_FOUND_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(commentDto))
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage("Post", NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
     }
 
@@ -76,13 +54,15 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(
-                        get("/api/v1/posts/{postId}/comments/{commentId}", Long.MAX_VALUE - 2, keyMap.getCommentId())
+                        get("/api/v1/posts/{postId}/comments/{commentId}", NOT_FOUND_ID, keyMap.getCommentId())
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage("Post", NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
         mockMvc.perform(
-                        get("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), Long.MAX_VALUE - 2)
+                        get("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), NOT_FOUND_ID)
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage("Comment", NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
     }
@@ -108,17 +88,19 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(
-                        put("/api/v1/posts/{postId}/comments/{commentId}", Long.MAX_VALUE - 2, keyMap.getCommentId())
+                        put("/api/v1/posts/{postId}/comments/{commentId}", NOT_FOUND_ID, keyMap.getCommentId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(updateCommentDto))
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage("Post", NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
         mockMvc.perform(
-                        put("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), Long.MAX_VALUE - 2)
+                        put("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), NOT_FOUND_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(updateCommentDto))
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage("Comment", NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
     }
@@ -139,65 +121,17 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(
-                        delete("/api/v1/posts/{postId}/comments/{commentId}", Long.MAX_VALUE - 2, keyMap.getCommentId())
+                        delete("/api/v1/posts/{postId}/comments/{commentId}", NOT_FOUND_ID, keyMap.getCommentId())
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage("Post", NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
         mockMvc.perform(
-                        delete("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), Long.MAX_VALUE - 2)
+                        delete("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), NOT_FOUND_ID)
                 )
+                .andExpect(jsonPath("$.message").value(returnResourceNotFoundExceptionMessage("Comment", NOT_FOUND_ID)))
                 .andExpect(status().isNotFound());
 
-    }
-
-    private PostDto postInsertHelper(PostDto postDto) {
-        PostDto post = postService.createPost(postDto);
-        Assertions.assertNotNull(post);
-        return post;
-    }
-
-    private KeyMap commentCreateHelper(CommentDto commentDto, PostDto postDto) throws Exception {
-        PostDto post = postInsertHelper(postDto);
-        mockMvc.perform(
-                        post("/api/v1/posts/{postId}/comments", post.getPostId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(commentDto))
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(commentDto.getName()))
-                .andExpect(jsonPath("$.email").value(commentDto.getEmail()))
-                .andExpect(jsonPath("$.body").value(commentDto.getBody()));
-        Comment commentByEmail = commentRepository.findCommentByEmail(commentDto.getEmail());
-        Assertions.assertNotNull(commentByEmail);
-        Long commentId = commentByEmail.getCommentId();
-        return new KeyMap(post.getPostId(), commentId);
-    }
-
-
-    private static class KeyMap {
-        private Long postId;
-        private Long commentId;
-
-        public KeyMap(Long postId, Long commentId) {
-            this.postId = postId;
-            this.commentId = commentId;
-        }
-
-        public Long getPostId() {
-            return postId;
-        }
-
-        public void setPostId(Long postId) {
-            this.postId = postId;
-        }
-
-        public Long getCommentId() {
-            return commentId;
-        }
-
-        public void setCommentId(Long commentId) {
-            this.commentId = commentId;
-        }
     }
 
 }
