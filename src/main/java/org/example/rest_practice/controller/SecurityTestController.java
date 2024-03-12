@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/v1/security-test")
 public class SecurityTestController {
-
-    // admin, user, guest 권한을 가지고 테스트
-    // get-all, get-admin, get-user, get-guest ....
-
+    
     @PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
     @GetMapping(path = "/get-all")
     public String all() {

@@ -45,6 +45,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+/*
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorDetails<String>> accessDeniedExceptionHandler(
             AccessDeniedException exception, WebRequest webRequest
@@ -53,6 +54,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         log.info("accessDeniedException controllerAdviceResponse = {}", errorDetails);
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
+*/
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails<String>> globalExceptionHandler(

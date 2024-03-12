@@ -16,10 +16,10 @@ public class SecurityTest extends SecuritySetup {
 
         UserDetails mockUser = User.withUsername("mock_user").password("12345").roles("MOCK_USER").build();
 
-        requestHelper("/api/v1/security-test/get-all",mockUser).andExpect(status().isUnauthorized());
-        requestHelper("/api/v1/security-test/get-admin",mockUser).andExpect(status().isUnauthorized());
-        requestHelper("/api/v1/security-test/get-user",mockUser).andExpect(status().isUnauthorized());
-        requestHelper("/api/v1/security-test/get-guest",mockUser).andExpect(status().isUnauthorized());
+        requestHelper("/api/v1/security-test/get-all", mockUser).andExpect(status().isUnauthorized());
+        requestHelper("/api/v1/security-test/get-admin", mockUser).andExpect(status().isUnauthorized());
+        requestHelper("/api/v1/security-test/get-user", mockUser).andExpect(status().isUnauthorized());
+        requestHelper("/api/v1/security-test/get-guest", mockUser).andExpect(status().isUnauthorized());
     }
 
     @Test
