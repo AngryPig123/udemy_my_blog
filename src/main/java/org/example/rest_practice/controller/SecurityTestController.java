@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/v1/security-test")
 public class SecurityTestController {
-    
+
     @PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
     @GetMapping(path = "/get-all")
     public String all() {
