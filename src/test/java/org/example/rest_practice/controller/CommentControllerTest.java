@@ -4,22 +4,25 @@ import org.example.rest_practice.payload.CommentDto;
 import org.example.rest_practice.payload.PostDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
+@WithMockUser(username = "admin", password = "admin", roles = {"ADMIN"})
 class CommentControllerTest extends CommentSetup {
 
 
     @Test
     void createComments() throws Exception {
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
-        CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
+        CommentDto commentDto = new CommentDto(0L, "name", "email@gmail.com", "body body body body");
         commentCreateHelper(commentDto, postDto);
 
         mockMvc.perform(
@@ -34,8 +37,8 @@ class CommentControllerTest extends CommentSetup {
     @Test
     void getCommentsById() throws Exception {
 
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
-        CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
+        CommentDto commentDto = new CommentDto(0L, "name", "email@gmail.com", "body body body body");
         KeyMap keyMap = commentCreateHelper(commentDto, postDto);
 
         mockMvc.perform(
@@ -64,17 +67,18 @@ class CommentControllerTest extends CommentSetup {
     @Test
     void updateComment() throws Exception {
 
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
-        CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
+        CommentDto commentDto = new CommentDto(0L, "name", "email@gmail.com", "body body body body");
         KeyMap keyMap = commentCreateHelper(commentDto, postDto);
 
-        CommentDto updateCommentDto = new CommentDto(0L, "updateName", "updateEmail", "updateBody");
+        CommentDto updateCommentDto = new CommentDto(0L, "updateName", "email@gmail.com", "update body body body body");
 
         mockMvc.perform(
                         put("/api/v1/posts/{postId}/comments/{commentId}", keyMap.getPostId(), keyMap.getCommentId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(updateCommentDto))
                 )
+                .andDo(print())
                 .andExpect(jsonPath("$.name").value(updateCommentDto.getName()))
                 .andExpect(jsonPath("$.email").value(updateCommentDto.getEmail()))
                 .andExpect(jsonPath("$.body").value(updateCommentDto.getBody()))
@@ -101,8 +105,8 @@ class CommentControllerTest extends CommentSetup {
     @Test
     void deleteComment() throws Exception {
 
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
-        CommentDto commentDto = new CommentDto(0L, "name", "email", "body");
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
+        CommentDto commentDto = new CommentDto(0L, "name", "email@gmail.com", "body body body body");
         KeyMap keyMap = commentCreateHelper(commentDto, postDto);
 
         mockMvc.perform(
