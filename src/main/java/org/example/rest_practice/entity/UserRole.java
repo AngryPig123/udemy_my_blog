@@ -29,4 +29,8 @@ public class UserRole extends BaseDate {
     @JoinColumn(name = "role_id")
     private Role roleId;
 
+    public String returnRoleName() {
+        return roleId.getName();
+    }
+
 }

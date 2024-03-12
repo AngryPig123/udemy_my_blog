@@ -5,24 +5,27 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.rest_practice.entity.etc.BaseDate;
+import org.example.rest_practice.payload.UserDto;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
-public class User extends BaseDate implements UserDetails  {
+public class User extends BaseDate implements UserDetails {
 
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Getter
     @Column(name = "email", nullable = false)
     private String email;
 
@@ -31,6 +34,16 @@ public class User extends BaseDate implements UserDetails  {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    public User(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
+
+    public UserDto toDto() {
+        return new UserDto(this.name, this.email, this.password);
+    }
 
     @Column(name = "account_non_expired", nullable = false, columnDefinition = "boolean default true")
     private boolean accountNonExpired;
@@ -49,7 +62,10 @@ public class User extends BaseDate implements UserDetails  {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.userRole.stream()
+                .map(UserRole::returnRoleName)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override

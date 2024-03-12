@@ -4,6 +4,7 @@ package org.example.rest_practice.exception.advice;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.example.rest_practice.exception.BlogApiException;
+import org.example.rest_practice.exception.DuplicateResourceException;
 import org.example.rest_practice.exception.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,17 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         log.info("accessDeniedException controllerAdviceResponse = {}", errorDetails);
         return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorDetails<String>> duplicateResourceExceptionHandler(
+            DuplicateResourceException exception, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
+        log.info("duplicateResourceExceptionHandler controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+
+//    DuplicateResourceException
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails<String>> globalExceptionHandler(

@@ -1,4 +1,4 @@
-package org.example.rest_practice.controller;
+package org.example.rest_practice.controller.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.rest_practice.entity.Post;

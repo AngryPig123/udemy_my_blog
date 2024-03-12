@@ -1,4 +1,4 @@
-package org.example.rest_practice.controller;
+package org.example.rest_practice.controller.comment;
 
 import org.example.rest_practice.payload.CommentDto;
 import org.example.rest_practice.payload.PostDto;

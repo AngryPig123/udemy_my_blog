@@ -1,4 +1,4 @@
-package org.example.rest_practice.controller;
+package org.example.rest_practice.controller.post;
 
 import org.example.rest_practice.payload.PostDto;
 import org.junit.jupiter.api.Order;
