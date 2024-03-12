@@ -1,10 +1,8 @@
-package org.example.rest_practice.controller.user;
-
+package org.example.rest_practice.controller.role;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
-import org.example.rest_practice.payload.UserDto;
-import org.example.rest_practice.repository.UserRepository;
+import org.example.rest_practice.payload.RoleDto;
+import org.example.rest_practice.service.RoleService;
 import org.example.rest_practice.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,9 +19,21 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * packageName    : org.example.rest_practice.controller.role
+ * fileName       : RoleSetup
+ * author         : AngryPig123
+ * date           : 2024-03-12
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2024-03-12        AngryPig123       최초 생성
+ */
+
 @SpringBootTest
 @AutoConfigureMockMvc
-public abstract class UserSetup {
+public abstract class RoleSetup {
 
     @Autowired
     protected MockMvc mockMvc;
@@ -35,29 +45,28 @@ public abstract class UserSetup {
     protected JdbcTemplate jdbcTemplate;
 
     @Autowired
-    protected UserService userService;
+    protected RoleService roleService;
 
     protected final Long NOT_FOUND_ID = Long.MAX_VALUE - 2;
 
     @BeforeEach
     void beforeEach(WebApplicationContext wac) {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-
-//        jdbcTemplate.execute("DELETE FROM users");
+//        jdbcTemplate.execute("DELETE FROM roles");
     }
-    @Transactional
-    protected UserDto userCreateHelper(UserDto userDto) throws Exception {
+
+    protected RoleDto roleCreateHelper(RoleDto roleDto) throws Exception {
         mockMvc.perform(
-                        post("/api/v1/users")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(userDto))
+                        post("/api/v1/roles")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(objectMapper.writeValueAsString(roleDto))
                 )
                 .andExpect(status().isCreated());
 
-        UserDto result = userService.getUserByEmail(userDto.getEmail());
+        RoleDto result = roleService.findRoleByName(roleDto.getName());
         Assertions.assertNotNull(result);
-
         return result;
     }
+
 
 }

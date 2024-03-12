@@ -12,9 +12,11 @@ import org.example.rest_practice.repository.PostRepository;
 import org.example.rest_practice.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
@@ -25,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto createComment(Long postId, CommentDto commentDto) {
         Comment comment = commentDto.toEntity();
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId+""));
         comment.setPostOnComments(post);
         Comment saveComment = commentRepository.save(comment);
         CommentDto result = saveComment.toDto();
@@ -68,8 +70,8 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment resutnComment(Long postId, Long commentId) {
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId+""));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId+""));
 
         if (!comment.getPost().getPostId().equals(post.getPostId())) {
             throw new BlogApiException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");

@@ -35,14 +35,18 @@ public class User extends BaseDate implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    public User(String email, String name, String password) {
-        this.email = email;
+    public User(String name, String email, String password) {
         this.name = name;
+        this.email = email;
         this.password = password;
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = false;
     }
 
     public UserDto toDto() {
-        return new UserDto(this.name, this.email, this.password);
+        return new UserDto(this.userId, this.name, this.email, this.password);
     }
 
     @Column(name = "account_non_expired", nullable = false, columnDefinition = "boolean default true")

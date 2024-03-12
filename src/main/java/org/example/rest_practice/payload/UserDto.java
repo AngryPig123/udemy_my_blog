@@ -14,6 +14,8 @@ import org.example.rest_practice.entity.User;
 @AllArgsConstructor
 public class UserDto {
 
+    private Long userId;
+
     @NotEmpty
     @Size(min = 2)
     private String name;

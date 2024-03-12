@@ -32,6 +32,7 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(1)
+    @Transactional
     void createPost() throws Exception {
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         mockMvc.perform(
@@ -47,6 +48,7 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(2)
+    @Transactional
     void getAllPosts() throws Exception {
 
         //  주의 Pageable 에서 pageNo 는 0부터 시작.
@@ -79,6 +81,7 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(3)
+    @Transactional
     void getPostById() throws Exception {
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         Long createId = createHelper(postDto);
@@ -98,6 +101,7 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(4)
+    @Transactional
     void updatePost() throws Exception {
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         Long createId = createHelper(postDto);
@@ -124,6 +128,7 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(5)
+    @Transactional
     void deletePost() throws Exception {
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         Long createId = createHelper(postDto);

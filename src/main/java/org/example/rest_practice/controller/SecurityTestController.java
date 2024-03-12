@@ -12,26 +12,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/v1/security-test")
 public class SecurityTestController {
 
-    @PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
+    @PreAuthorize("permitAll()")
     @GetMapping(path = "/get-all")
     public String all() {
         return "getAll";
     }
 
     @GetMapping(path = "/get-admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String getAdmin() {
         return "getAdmin";
     }
 
     @GetMapping(path = "/get-user")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER')")
     public String getUser() {
         return "getUser";
     }
 
     @GetMapping(path = "/get-guest")
-    @PreAuthorize("hasRole('GUEST')")
+    @PreAuthorize("hasAuthority('GUEST')")
     public String getGuest() {
         return "getGuest";
     }

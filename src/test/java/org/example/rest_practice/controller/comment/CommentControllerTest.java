@@ -14,12 +14,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Transactional
 @WithMockUser(username = "admin", password = "admin", roles = {"ADMIN"})
 class CommentControllerTest extends CommentSetup {
 
 
     @Test
+    @Transactional
     void createComments() throws Exception {
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         CommentDto commentDto = new CommentDto(0L, "name", "email@gmail.com", "body body body body");
@@ -35,6 +35,7 @@ class CommentControllerTest extends CommentSetup {
     }
 
     @Test
+    @Transactional
     void getCommentsById() throws Exception {
 
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
@@ -65,6 +66,7 @@ class CommentControllerTest extends CommentSetup {
 
 
     @Test
+    @Transactional
     void updateComment() throws Exception {
 
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
@@ -103,6 +105,7 @@ class CommentControllerTest extends CommentSetup {
     }
 
     @Test
+    @Transactional
     void deleteComment() throws Exception {
 
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
@@ -80,7 +82,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPostById(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id+""));
         PostDto result = post.toDto();
         log.info("result = {}", result);
         return result;

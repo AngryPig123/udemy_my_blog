@@ -9,10 +9,7 @@ import org.example.rest_practice.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -20,19 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api/v1/users")
 public class UserController {
 
+    //  권한 부분과 유저-권한 기능이 완성되기 전까지는 permitAll()로 둔다.
     private final UserService userService;
 
-    //  유저 등록
     @PreAuthorize("permitAll()")
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
-
-    //  유저 조회
-    //  유저 정보 수정
-    //  유저 삭제
-
+    @PreAuthorize("permitAll()")
+    @GetMapping(path = "/{userId}")
+    public ResponseEntity<UserDto> findUserByUserId(@PathVariable("userId") Long userId) {
+        return new ResponseEntity<>(userService.getUserByUserId(userId), HttpStatus.OK);
+    }
 
 }

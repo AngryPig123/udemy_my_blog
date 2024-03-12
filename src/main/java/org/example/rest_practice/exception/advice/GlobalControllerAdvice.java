@@ -61,7 +61,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     ) {
         ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
         log.info("duplicateResourceExceptionHandler controllerAdviceResponse = {}", errorDetails);
-        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
 
 //    DuplicateResourceException
