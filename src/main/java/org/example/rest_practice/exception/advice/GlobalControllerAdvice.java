@@ -4,11 +4,13 @@ package org.example.rest_practice.exception.advice;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.example.rest_practice.exception.BlogApiException;
+import org.example.rest_practice.exception.DuplicateResourceException;
 import org.example.rest_practice.exception.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,12 +46,32 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDetails<String>> accessDeniedExceptionHandler(
+            AccessDeniedException exception, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
+        log.info("accessDeniedException controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorDetails<String>> duplicateResourceExceptionHandler(
+            DuplicateResourceException exception, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
+        log.info("duplicateResourceExceptionHandler controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
+
+//    DuplicateResourceException
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails<String>> globalExceptionHandler(
             Exception exception, WebRequest webRequest
     ) {
         ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
-        log.info("blogApiExceptionHandler controllerAdviceResponse = {}", errorDetails);
+        log.info("exception controllerAdviceResponse = {}", errorDetails);
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

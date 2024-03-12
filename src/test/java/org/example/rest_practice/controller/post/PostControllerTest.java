@@ -1,9 +1,10 @@
-package org.example.rest_practice.controller;
+package org.example.rest_practice.controller.post;
 
 import org.example.rest_practice.payload.PostDto;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -26,12 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @Transactional
+@WithMockUser(username = "admin", password = "admin", roles = {"ADMIN"})
 class PostControllerTest extends PostSetup {
 
     @Test
     @Order(1)
+    @Transactional
     void createPost() throws Exception {
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         mockMvc.perform(
                         post("/api/v1/posts")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -45,11 +48,12 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(2)
+    @Transactional
     void getAllPosts() throws Exception {
 
         //  주의 Pageable 에서 pageNo 는 0부터 시작.
 
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         createHelper(postDto);
         mockMvc.perform(
                         get("/api/v1/posts?pageNo={pageNo}&pageSize={pageSize}&sortBy={sortBy}&sortDir={sortDir}", 0, 10, "title", "desc")
@@ -77,8 +81,9 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(3)
+    @Transactional
     void getPostById() throws Exception {
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         Long createId = createHelper(postDto);
 
         mockMvc.perform(
@@ -96,10 +101,11 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(4)
+    @Transactional
     void updatePost() throws Exception {
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         Long createId = createHelper(postDto);
-        PostDto updatePostDto = new PostDto(0L, "updateTitle", "updateDescription", "updateContent",new HashSet<>());
+        PostDto updatePostDto = new PostDto(0L, "updateTitle", "updateDescription", "updateContent", new HashSet<>());
 
         mockMvc.perform(
                         put("/api/v1/posts/{id}", createId)
@@ -122,8 +128,9 @@ class PostControllerTest extends PostSetup {
 
     @Test
     @Order(5)
+    @Transactional
     void deletePost() throws Exception {
-        PostDto postDto = new PostDto(0L, "title", "description", "content",new HashSet<>());
+        PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
         Long createId = createHelper(postDto);
 
         mockMvc.perform(

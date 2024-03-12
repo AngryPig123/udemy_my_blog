@@ -7,6 +7,7 @@ import org.example.rest_practice.payload.CommentDto;
 import org.example.rest_practice.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -17,6 +18,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path = "/{postId}/comments")
     public ResponseEntity<CommentDto> createComment(
             @PathVariable("postId") Long postId,
@@ -33,6 +35,7 @@ public class CommentController {
         return new ResponseEntity<>(commentService.getCommentsById(postId, commentId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(path = "/{postId}/comments/{commentId}")
     public ResponseEntity<CommentDto> updateComment(
             @PathVariable("postId") Long postId,
@@ -42,6 +45,7 @@ public class CommentController {
         return new ResponseEntity<>(commentService.updateComment(postId, commentId, commentDto), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "/{postId}/comments/{commentId}")
     public ResponseEntity<CommentDto> deleteComment(
             @PathVariable("postId") Long postId,

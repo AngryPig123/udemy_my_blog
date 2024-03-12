@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.rest_practice.entity.etc.BaseDate;
 import org.example.rest_practice.payload.CommentDto;
 import org.example.rest_practice.payload.PostDto;
 
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "posts", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
-public class Post {
+public class Post extends BaseDate {
 
     @Id
     @Column(name = "post_id")
