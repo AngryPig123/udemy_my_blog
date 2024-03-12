@@ -6,13 +6,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.rest_practice.entity.etc.BaseDate;
 import org.example.rest_practice.payload.CommentDto;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "comments", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
-public class Comment {
+public class Comment extends BaseDate {
 
     @Id
     @Column(name = "comment_id")
