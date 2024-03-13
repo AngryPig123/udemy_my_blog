@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.rest_practice.payload.RoleDto;
 import org.example.rest_practice.payload.UserDto;
+import org.example.rest_practice.service.AuthService;
 import org.example.rest_practice.service.RoleService;
 import org.example.rest_practice.service.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -35,6 +36,7 @@ import java.io.InputStreamReader;
 public class ProjectRunnable implements CommandLineRunner {
 
     private final UserService userService;
+    private final AuthService authService;
     private final RoleService roleService;
     private final ResourceLoader resourceLoader;
     private final JdbcTemplate jdbcTemplate;
@@ -49,9 +51,9 @@ public class ProjectRunnable implements CommandLineRunner {
         UserDto user = userService.getUserByEmail("user@gmail.com");
         UserDto guest = userService.getUserByEmail("guest@gmail.com");
 
-        RoleDto admin_auth = roleService.findRoleByName("ADMIN");
-        RoleDto user_auth = roleService.findRoleByName("USER");
-        RoleDto guest_auth = roleService.findRoleByName("GUEST");
+        RoleDto admin_auth = roleService.findRoleByName("ROLE_ADMIN");
+        RoleDto user_auth = roleService.findRoleByName("ROLE_USER");
+        RoleDto guest_auth = roleService.findRoleByName("ROLE_GUEST");
 
         usersRolesDataInit(admin.getUserId(), admin_auth.getRoleId());
         usersRolesDataInit(user.getUserId(), user_auth.getRoleId());
@@ -70,7 +72,7 @@ public class ProjectRunnable implements CommandLineRunner {
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(",");
                 UserDto userDto = new UserDto(0L, split[0], split[1], split[2]);
-                userService.createUser(userDto);
+                authService.register(userDto);
             }
         } catch (IOException io) {
             log.error("IOException = ", io);

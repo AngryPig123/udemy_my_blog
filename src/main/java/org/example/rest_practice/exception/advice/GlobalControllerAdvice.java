@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,57 +28,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorDetails<String>> resourceNotFoundExceptionHandler(
-            ResourceNotFoundException resourceNotFoundException, WebRequest webRequest
-    ) {
-
-        ErrorDetails<String> errorDetails = new ErrorDetails<>(resourceNotFoundException.getMessage(), webRequest.getDescription(false));
-        log.info("resourceNotFoundExceptionHandler controllerAdviceResponse = {}", errorDetails);
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(BlogApiException.class)
-    public ResponseEntity<ErrorDetails<String>> blogApiExceptionHandler(
-            BlogApiException blogApiException, WebRequest webRequest
-    ) {
-        ErrorDetails<String> errorDetails = new ErrorDetails<>(blogApiException.getMessage(), webRequest.getDescription(false));
-        log.info("blogApiExceptionHandler controllerAdviceResponse = {}", errorDetails);
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorDetails<String>> accessDeniedExceptionHandler(
-            AccessDeniedException exception, WebRequest webRequest
-    ) {
-        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
-        log.info("accessDeniedException controllerAdviceResponse = {}", errorDetails);
-        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorDetails<String>> duplicateResourceExceptionHandler(
-            DuplicateResourceException exception, WebRequest webRequest
-    ) {
-        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
-        log.info("duplicateResourceExceptionHandler controllerAdviceResponse = {}", errorDetails);
-        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
-    }
-
-//    DuplicateResourceException
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetails<String>> globalExceptionHandler(
-            Exception exception, WebRequest webRequest
-    ) {
-        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
-        log.info("exception controllerAdviceResponse = {}", errorDetails);
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-
+    /**
+     * 400, 404, 409
+     */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest webRequest) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest webRequest
+    ) {
 
         Map<String, String> errors = new HashMap<>();
 
@@ -91,6 +48,69 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BlogApiException.class)
+    public ResponseEntity<ErrorDetails<String>> blogApiExceptionHandler(
+            BlogApiException blogApiException, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(blogApiException.getMessage(), webRequest.getDescription(false));
+        log.info("blogApiExceptionHandler controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorDetails<String>> resourceNotFoundExceptionHandler(
+            ResourceNotFoundException resourceNotFoundException, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(resourceNotFoundException.getMessage(), webRequest.getDescription(false));
+        log.info("resourceNotFoundExceptionHandler controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorDetails<String>> duplicateResourceExceptionHandler(
+            DuplicateResourceException exception, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
+        log.info("duplicateResourceExceptionHandler controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
+
+
+    /**
+     * authentication, authorization exception
+     * 401, 403
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorDetails<String>> badCredentialsExceptionHandler(
+            BadCredentialsException exception, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
+        log.info("badCredentialsException controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDetails<String>> accessDeniedExceptionHandler(
+            AccessDeniedException exception, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
+        log.info("accessDeniedException controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+
+    /**
+     * 5xx, server exception
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorDetails<String>> globalExceptionHandler(
+            Exception exception, WebRequest webRequest
+    ) {
+        ErrorDetails<String> errorDetails = new ErrorDetails<>(exception.getMessage(), webRequest.getDescription(false));
+        log.info("exception controllerAdviceResponse = {}", errorDetails);
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
     @Setter
     @Getter
     @ToString
@@ -99,7 +119,6 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     public static class ErrorDetails<T> {
 
         private String localDateTime;
-
         private T message;
         private String details;
 

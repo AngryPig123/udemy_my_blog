@@ -33,6 +33,7 @@ public class RoleController {
     //  생성
     private final RoleService roleService;
 
+    //  롤 생성을 할때 Authority 를 넣을 건지 ROLE 을 넣을건지
     @PreAuthorize("permitAll()")
     @PostMapping
     public ResponseEntity<RoleDto> createRole(

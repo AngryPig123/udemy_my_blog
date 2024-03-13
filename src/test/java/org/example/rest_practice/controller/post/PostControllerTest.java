@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -30,20 +31,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "admin", password = "admin", roles = {"ADMIN"})
 class PostControllerTest extends PostSetup {
 
+    //  controller service repository entity + [ integrated ]
+
     @Test
     @Order(1)
     @Transactional
     void createPost() throws Exception {
+        // given
         PostDto postDto = new PostDto(0L, "title", "description", "content", new HashSet<>());
-        mockMvc.perform(
-                        post("/api/v1/posts")
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(postDto))
-                )
-                .andExpect(status().isOk())
+
+        // when
+        ResultActions perform = mockMvc.perform(
+                post("/api/v1/posts")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(postDto))
+        );
+
+        //  then
+        perform.andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("title"))
                 .andExpect(jsonPath("$.description").value("description"))
                 .andExpect(jsonPath("$.content").value("content"));
+
     }
 
     @Test

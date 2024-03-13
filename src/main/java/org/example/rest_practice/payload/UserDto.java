@@ -28,7 +28,6 @@ public class UserDto {
     @Size(min = 6, max = 25)
     private String password;
 
-
     public User toEntity() {
         return new User(this.name, this.email, this.password);
     }

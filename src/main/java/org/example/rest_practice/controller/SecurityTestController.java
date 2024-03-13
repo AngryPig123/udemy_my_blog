@@ -19,19 +19,19 @@ public class SecurityTestController {
     }
 
     @GetMapping(path = "/get-admin")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getAdmin() {
         return "getAdmin";
     }
 
     @GetMapping(path = "/get-user")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasRole('USER')")
     public String getUser() {
         return "getUser";
     }
 
     @GetMapping(path = "/get-guest")
-    @PreAuthorize("hasAuthority('GUEST')")
+    @PreAuthorize("hasRole('GUEST')")
     public String getGuest() {
         return "getGuest";
     }

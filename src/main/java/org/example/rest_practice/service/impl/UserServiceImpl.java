@@ -20,29 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    @Override
-    public UserDto createUser(UserDto userDto) {
-
-        log.info("userDto = {}", userDto);
-
-        Optional<User> byEmail = userRepository.findUserByEmail(userDto.getEmail());
-
-        if (byEmail.isPresent()) {
-            throw new DuplicateResourceException("user", "email", userDto.getEmail());
-        } else {
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            User saveEntity = userDto.toEntity();
-            User save = userRepository.save(saveEntity);
-            UserDto result = save.toDto();
-            log.info("result = {}", result);
-            return result;
-        }
-
-    }
 
     @Override
     public UserDto getUserByUserId(Long userId) {
